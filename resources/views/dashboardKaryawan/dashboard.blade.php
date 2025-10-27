@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin | SIP-KBI</title>
+    <title>Dashboard Karyawan | SIP-KBI</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -118,15 +118,15 @@
                                     <td class="py-2 px-3">{{ \Carbon\Carbon::parse($item->tanggal)->format('d/m/Y') }}</td>
                                     <td class="py-2 px-3">{{ $item->jenis }}</td>
                                     <td class="py-2 px-3">
-                                        @if ($item->jenis == 'Pemasukan')
-                                            <span class="text-green-600 font-medium">Pendapatan</span>
+                                        @if ($item->jenis == 'pemasukan')
+                                            <span class="text-green-600 font-medium">Pemasukan</span>
                                         @else
                                             <span class="text-red-500 font-medium">Pengeluaran</span>
                                         @endif
                                     </td>
                                     <td class="py-2 px-3">{{ $item->keterangan }}</td>
-                                    <td class="py-2 px-3 text-right {{ $item->jenis == 'Pemasukan' ? 'text-green-600' : 'text-red-500' }}">
-                                        {{ $item->jenis == 'Pemasukan' ? '+' : '-' }}Rp {{ number_format($item->jumlah, 0, ',', '.') }}
+                                    <td class="py-2 px-3 text-right {{ $item->jenis == 'pemasukan' ? 'text-green-600' : 'text-red-500' }}">
+                                        {{ $item->jenis == 'pemasukan' ? '+' : '-' }}Rp {{ number_format($item->jumlah, 0, ',', '.') }}
                                     </td>
                                 </tr>
                             @endforeach
