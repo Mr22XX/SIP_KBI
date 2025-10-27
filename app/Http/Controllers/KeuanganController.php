@@ -33,11 +33,22 @@ class KeuanganController extends Controller
         $saldo = $totalPemasukan - $totalPengeluaran;
 
 
+       // Dapatkan daftar bulan yang tersedia dari data
+        $availableMonths = DataKeuangan::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as bulan')
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'desc')
+            ->pluck('bulan');
+
+        // Kirim tanggal asli untuk filter
+        $tanggalAsli = $keuangan->pluck('tanggal');
+
         return view('dashboardKaryawan.dashboard', compact(
-            'labels',
-            'dataPemasukan',
-            'dataPengeluaran',
+            'labels', 
+            'dataPemasukan', 
+            'dataPengeluaran', 
             'latestTransactions',
+            'availableMonths',
+            'tanggalAsli',
             'totalPemasukan',
             'totalPengeluaran',
             'saldo'

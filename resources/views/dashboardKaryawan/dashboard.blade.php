@@ -71,6 +71,17 @@
                 </div>
             </div>
 
+             <!-- Filter Bulan -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+                <h3 class="text-lg font-semibold text-sipkbi-green">Grafik Keuangan</h3>
+                <select id="month-filter" class="border border-gray-300 dark:border-gray-700 rounded-lg p-2 bg-white dark:bg-gray-800">
+                    <option value="all">Semua Bulan</option>
+                    @foreach ($availableMonths as $month)
+                        <option value="{{ $month }}">{{ \Carbon\Carbon::parse($month . '-01')->translatedFormat('F Y') }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Chart Section -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
@@ -130,19 +141,16 @@
         const sidebarContainer = document.getElementById('sidebar-container');
         const sidebarOverlay = document.getElementById('sidebar-overlay');
 
-        // Buka sidebar
         sidebarToggle?.addEventListener('click', () => {
             sidebarContainer.classList.remove('-translate-x-full');
             sidebarOverlay.classList.remove('hidden');
         });
 
-        // Tutup sidebar (tombol X)
         sidebarClose?.addEventListener('click', () => {
             sidebarContainer.classList.add('-translate-x-full');
             sidebarOverlay.classList.add('hidden');
         });
 
-        // Tutup sidebar (klik overlay)
         sidebarOverlay?.addEventListener('click', () => {
             sidebarContainer.classList.add('-translate-x-full');
             sidebarOverlay.classList.add('hidden');
@@ -159,7 +167,7 @@
             html.classList.remove('dark');
             toggle.textContent = '🌞';
         }
-        toggle.addEventListener('click', () => {
+        toggle?.addEventListener('click', () => {
             html.classList.toggle('dark');
             const isDark = html.classList.contains('dark');
             toggle.textContent = isDark ? '🌙' : '🌞';
@@ -167,11 +175,16 @@
         });
 
         // === CHART DATA ===
-        const labels = @json($labels);
+        const labels = @json($labels); // Sudah diformat (misal: "05 Okt")
+        const tanggalAsli = @json($tanggalAsli); // Format YYYY-MM-DD dari controller
         const dataPemasukan = @json($dataPemasukan);
         const dataPengeluaran = @json($dataPengeluaran);
 
-        new Chart(document.getElementById('chartPemasukan'), {
+        // === CHART INITIALIZATION ===
+        const ctxPemasukan = document.getElementById('chartPemasukan').getContext('2d');
+        const ctxPengeluaran = document.getElementById('chartPengeluaran').getContext('2d');
+
+        const chartPemasukan = new Chart(ctxPemasukan, {
             type: 'line',
             data: {
                 labels: labels,
@@ -187,7 +200,7 @@
             options: { responsive: true }
         });
 
-        new Chart(document.getElementById('chartPengeluaran'), {
+        const chartPengeluaran = new Chart(ctxPengeluaran, {
             type: 'line',
             data: {
                 labels: labels,
@@ -202,6 +215,39 @@
             },
             options: { responsive: true }
         });
+
+        // === FILTER BULAN ===
+        document.getElementById('month-filter').addEventListener('change', (e) => {
+            const selectedMonth = e.target.value; // format: YYYY-MM
+            if (selectedMonth === 'all') {
+                updateCharts(labels, dataPemasukan, dataPengeluaran);
+            } else {
+                const filteredLabels = [];
+                const filteredPemasukan = [];
+                const filteredPengeluaran = [];
+
+                tanggalAsli.forEach((tgl, i) => {
+                    if (tgl.startsWith(selectedMonth)) {
+                        filteredLabels.push(labels[i]);
+                        filteredPemasukan.push(dataPemasukan[i]);
+                        filteredPengeluaran.push(dataPengeluaran[i]);
+                    }
+                });
+
+                updateCharts(filteredLabels, filteredPemasukan, filteredPengeluaran);
+            }
+        });
+
+        // === UPDATE CHART FUNCTION ===
+        function updateCharts(newLabels, newPemasukan, newPengeluaran) {
+            chartPemasukan.data.labels = newLabels;
+            chartPemasukan.data.datasets[0].data = newPemasukan;
+            chartPemasukan.update();
+
+            chartPengeluaran.data.labels = newLabels;
+            chartPengeluaran.data.datasets[0].data = newPengeluaran;
+            chartPengeluaran.update();
+        }
     </script>
 </body>
 </html>
