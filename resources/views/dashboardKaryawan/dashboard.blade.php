@@ -59,15 +59,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-md">
                     <h3 class="text-sm text-gray-500 dark:text-gray-400">Total Pendapatan</h3>
-                    <p class="text-3xl font-bold text-green-600 mt-2">Rp 8.800.000</p>
+                    <p class="text-3xl font-bold text-green-600 mt-2">Rp {{ number_format($totalPemasukan, 0, ',', '.') }}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-md">
                     <h3 class="text-sm text-gray-500 dark:text-gray-400">Total Pengeluaran</h3>
-                    <p class="text-3xl font-bold text-red-500 mt-2">Rp 1.300.000</p>
+                    <p class="text-3xl font-bold text-red-600 mt-2">Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-md">
                     <h3 class="text-sm text-gray-500 dark:text-gray-400">Saldo</h3>
-                    <p class="text-3xl font-bold text-green-600 mt-2">Rp 7.500.000</p>
+                    <p class="text-3xl font-bold text-blue-600 mt-2">Rp {{ number_format($saldo, 0, ',', '.') }}</p>
                 </div>
             </div>
 

@@ -23,9 +23,25 @@ class KeuanganController extends Controller
         // Ambil 5 data terbaru untuk tabel
         $latestTransactions = DataKeuangan::orderBy('tanggal', 'desc')->take(5)->get();
 
-        // Total Pemasukan
-        // $totalPemasukan = DataKeuangan::
+       // Total Pemasukan
+        $totalPemasukan = DataKeuangan::where('jenis', 'Pemasukan')->sum('jumlah');
 
-        return view('dashboardKaryawan.dashboard', compact('labels', 'dataPemasukan', 'dataPengeluaran', 'latestTransactions'));
+        // Total Pengeluaran
+        $totalPengeluaran = DataKeuangan::where('jenis', 'Pengeluaran')->sum('jumlah');
+
+        // Hitung saldo
+        $saldo = $totalPemasukan - $totalPengeluaran;
+
+
+        return view('dashboardKaryawan.dashboard', compact(
+            'labels',
+            'dataPemasukan',
+            'dataPengeluaran',
+            'latestTransactions',
+            'totalPemasukan',
+            'totalPengeluaran',
+            'saldo'
+        ));
+
     }
 }
